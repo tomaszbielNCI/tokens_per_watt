@@ -1,0 +1,18 @@
+models:
+  - qwen2.5:0.5b
+  - qwen2.5:7b
+  - qwen2.5:14b
+  - mistral:7b
+  - deepseek-r1:7b
+
+modes: [direct, cot]
+repeats: 3
+n_per_difficulty: 60
+
+generation:
+  num_predict: 1024
+  num_ctx: 4096
+  temperature: 0.0
+  keep_alive: -1
+
+output: results/grid.csv
