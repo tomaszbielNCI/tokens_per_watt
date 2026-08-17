@@ -141,6 +141,23 @@ crossing that produces the largest apparent saving is one this data
 cannot resolve. The 25.7% figure at a 0.80 floor does not depend on an
 unresolved comparison: the same interval's upper bound falls below 0.80.
 
+## 8. The measurement boundary also moves the recommendation
+
+The same routing policy, evaluated on the same runs, saves 25.7% on
+idle-subtracted energy and 21.7% on raw energy at a 0.80 accuracy floor.
+The model selection is identical under both conventions — 3b, 3b, 7b —
+so the policy is robust to the boundary while the figure quoted for it
+is not.
+
+In absolute terms the ordering reverses: 549 J saved raw against 300 J
+idle-subtracted. Both are correct under different deployment
+assumptions. If the card remains powered regardless of load, as it does
+on a desktop serving a single user, only the incremental 300 J is
+avoided. If finishing sooner allows the device to be powered down or
+reallocated, the full 549 J is. The measurement does not contain the
+information needed to choose, and no published efficiency figure states
+which assumption it carries.
+
 ## Limitations
 
 Batch size 1 on a consumer card is the far-right end of the
