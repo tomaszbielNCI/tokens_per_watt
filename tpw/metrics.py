@@ -11,13 +11,18 @@ def load(path: str) -> pd.DataFrame:
 
 
 def balanced(df: pd.DataFrame) -> pd.DataFrame:
-    """Restrict to task_ids attempted by every model, so cell counts
-    are equal. An earlier partial run used a smaller task sample and
-    the resume key does not include sample size, leaving
-    qwen2.5:0.5b with more observations than the other models."""
-    task_ids_by_model = df.groupby("model")["task_id"].apply(set)
-    common_task_ids = set.intersection(*task_ids_by_model)
-    return df[df["task_id"].isin(common_task_ids)].copy()
+    """Restrict to the repeat indices and task_ids present for every
+    model, so every cell holds the same count. An earlier partial run
+    used repeats=3 while the final grid used repeats=2, and the resume
+    key records neither which config produced a row nor how many
+    repeats that config requested."""
+    keep_repeats = set.intersection(
+        *(set(g["repeat"]) for _, g in df.groupby("model"))
+    )
+    keep_tasks = set.intersection(
+        *(set(g["task_id"]) for _, g in df.groupby("model"))
+    )
+    return df[df["repeat"].isin(keep_repeats) & df["task_id"].isin(keep_tasks)]
 
 
 def per_cell(df: pd.DataFrame, idle_w: float = 0.0) -> pd.DataFrame:

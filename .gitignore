@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+.windsurf/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Measurement output — raw data is committed deliberately as the
+# reproducibility artefact referenced in the report; only scratch
+# files and local overrides are excluded.
+results/*.log
+results/test.csv
+config_local.yaml

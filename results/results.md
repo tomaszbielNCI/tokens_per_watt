@@ -35,6 +35,25 @@ decision: `mistral:latest` moves from 3rd to 7th, `qwen2.5:1.5b` from
 6th to 2nd, `granite3-moe:3b` from 2nd to 4th. Published inference
 energy figures do not state which convention they use.
 
+## 2b. The idle-subtraction decision destroys the ranking it produces
+
+Ranking under `j_per_correct`, raw against idle-subtracted:
+
+| model | raw | idle-subtracted |
+| --- | --- | --- |
+| granite3-moe:3b | 1 | 4 |
+| mistral:latest | 2 | 7 |
+| qwen2.5:0.5b | 3 | 2 |
+| qwen2.5:3b | 4 | 3 |
+| qwen2.5:7b | 5 | 5 |
+| qwen2.5:1.5b | 6 | 1 |
+| llama3.1:8b | 7 | 6 |
+
+Spearman rho between the two orderings is -0.107: the same metric over
+the same runs produces essentially unrelated rankings depending on
+whether idle draw counts as part of the cost of inference. Published
+figures do not state which convention they follow.
+
 ## 3. Token thrift is a capability that scales with model size
 
 Mean output tokens, with the direct-mode prompt asking for the final
