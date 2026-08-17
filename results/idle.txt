@@ -1,0 +1,4 @@
+idle_seconds	300
+idle_energy_j	15640.0
+idle_mean_w	52.13
+idle_peak_w	55.00

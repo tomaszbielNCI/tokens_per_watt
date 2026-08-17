@@ -31,7 +31,7 @@ def load_gsm8k(n_per_difficulty: int = 60, seed: int = 0) -> list[Task]:
     """Stratified sample of the GSM8K test split."""
     from datasets import load_dataset
 
-    rows = load_dataset("gsm8k", "main", split="test").shuffle(seed=seed)
+    rows = load_dataset("openai/gsm8k", "main", split="test").shuffle(seed=seed)
     buckets: dict[str, list[Task]] = {"easy": [], "medium": [], "hard": []}
 
     for i, row in enumerate(rows):

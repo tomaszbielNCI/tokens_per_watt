@@ -1,0 +1,14 @@
+power_mode	nvml_power_samples
+power_detail	NVIDIA GeForce RTX 4060: 119 buffered power samples
+ollama	ollama version is 0.32.14
+gpu	NVIDIA GeForce RTX 4060, 595.95, 8188 MiB
+num_ctx	4096
+
+granite3-moe:3b	157f538ae66e0663cee4fb30ef11e3ccf1ae3c1bf6da2698dbac1df3a25698c7
+llama3.1:8b	46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e
+qwen2.5:3b	357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b
+qwen2.5:1.5b	65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b
+qwen2.5:7b	845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e
+qwen2.5:0.5b	a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67
+gemma4:12b	4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c
+mistral:latest	6577803aa9a036369e481d648a2baebb381ebc6e897f2bb9a766a2aa7bfbc1cf

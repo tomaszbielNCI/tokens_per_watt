@@ -27,13 +27,18 @@ _FIELDS = [
 
 
 def build_grid(models, modes, tasks, repeats, seed=0) -> list[Cell]:
-    """Full cross product in randomised order, so thermal drift is not
-    confounded with model identity."""
-    cells = [
-        Cell(model=m, mode=mo, difficulty=t.difficulty, task_id=t.task_id, repeat=r)
-        for m, mo, t, r in itertools.product(models, modes, tasks, range(repeats))
-    ]
-    random.Random(seed).shuffle(cells)
+    """Grouped by model so each is loaded once; randomised within each
+    group so thermal drift is not confounded with task or mode."""
+    rng = random.Random(seed)
+    cells = []
+    for model in models:
+        block = [
+            Cell(model=model, mode=mo, difficulty=t.difficulty,
+                 task_id=t.task_id, repeat=r)
+            for mo, t, r in itertools.product(modes, tasks, range(repeats))
+        ]
+        rng.shuffle(block)
+        cells.extend(block)
     return cells
 
 
@@ -96,12 +101,18 @@ def run_one(cell: Cell, question: str, expected: str, **kwargs) -> RunResult:
 
 def run_grid(cells, tasks, out_path, **kwargs) -> None:
     """Execute the grid, appending each row immediately and skipping
-    anything already present, so an interrupted run can resume."""
+    anything already present, so an interrupted run can resume.
+
+    Issues an unmeasured warm-up call whenever the model changes: on a
+    card too small to hold every model at once, the first call after a
+    switch pays the VRAM load cost, which would otherwise be charged to
+    whichever task happened to come first."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     by_id = {t.task_id: t for t in tasks}
     done = _done(out_path)
     fresh = not out_path.exists()
+    loaded = None
 
     with out_path.open("a", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=_FIELDS)
@@ -111,6 +122,10 @@ def run_grid(cells, tasks, out_path, **kwargs) -> None:
             key = (cell.model, cell.mode, cell.task_id, str(cell.repeat))
             if key in done:
                 continue
+            if cell.model != loaded:
+                print(f"loading {cell.model}")
+                generate(cell.model, "ok", **{**kwargs, "num_predict": 8})
+                loaded = cell.model
             task = by_id[cell.task_id]
             result = run_one(cell, task.question, task.answer, **kwargs)
             writer.writerow(_row(result, task.answer))

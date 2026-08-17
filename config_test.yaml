@@ -1,0 +1,15 @@
+models:
+  - qwen2.5:0.5b
+  - qwen2.5:7b
+
+modes: [direct, cot]
+repeats: 1
+n_per_difficulty: 5
+
+generation:
+  num_predict: 1024
+  num_ctx: 4096
+  temperature: 0.0
+  keep_alive: -1
+
+output: results/test.csv
