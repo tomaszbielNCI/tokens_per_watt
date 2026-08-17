@@ -10,9 +10,21 @@ def load(path: str) -> pd.DataFrame:
     return df
 
 
+def balanced(df: pd.DataFrame) -> pd.DataFrame:
+    """Restrict to task_ids attempted by every model, so cell counts
+    are equal. An earlier partial run used a smaller task sample and
+    the resume key does not include sample size, leaving
+    qwen2.5:0.5b with more observations than the other models."""
+    task_ids_by_model = df.groupby("model")["task_id"].apply(set)
+    common_task_ids = set.intersection(*task_ids_by_model)
+    return df[df["task_id"].isin(common_task_ids)].copy()
+
+
 def per_cell(df: pd.DataFrame, idle_w: float = 0.0) -> pd.DataFrame:
     """Aggregate the four metrics that the report compares. Passing
-    idle_w subtracts the measured idle draw; report both variants."""
+    idle_w subtracts the measured idle draw; report both variants.
+    tps_per_mw is the reciprocal of j_per_token (tokens/energy in different
+    units) and is kept for plotting against NVIDIA's published axes."""
     d = df.copy()
     if idle_w:
         d["energy_j"] = d["energy_j"] - idle_w * d["wall_s"]
@@ -41,7 +53,6 @@ def per_cell(df: pd.DataFrame, idle_w: float = 0.0) -> pd.DataFrame:
 def rank_table(cells: pd.DataFrame) -> pd.DataFrame:
     """Rank models under each metric. Divergence between columns is the
     finding; agreement would be the null result."""
-    metrics = ["j_per_token", "j_per_correct", "usd_per_task", "tps_per_mw"]
+    metrics = ["j_per_token", "j_per_correct", "tokens_per_correct", "usd_per_task"]
     ranks = cells.groupby("model")[metrics].mean()
-    ascending = {"tps_per_mw": False}
-    return ranks.rank(ascending=[ascending.get(m, True) for m in metrics])
+    return ranks.rank(ascending=True)
