@@ -110,6 +110,37 @@ verified against the data (`j_per_token` 0.162 against `tps_per_mw`
 frontier restates energy per token with the sign reversed so that higher
 reads as better.
 
+## 7. Difficulty-conditioned routing: oracle headroom
+
+Routing the query to the cheapest model that clears a given accuracy
+floor, against the cheapest single model that clears the same floor on
+every difficulty stratum. Energy per correct answer, idle-subtracted,
+CoT mode.
+
+| accuracy floor | routed | best fixed | saving |
+| --- | --- | --- | --- |
+| 0.50 | 386.9 J | 399.3 J (qwen2.5:1.5b) | 3.1% |
+| 0.60 | 598.7 J | 699.1 J (qwen2.5:3b) | 14.4% |
+| 0.70 | 777.1 J | 1164.9 J (qwen2.5:7b) | 33.3% |
+| 0.80 | 865.1 J | 1164.9 J (qwen2.5:7b) | 25.7% |
+
+The saving is not monotonic in the floor. It peaks where the
+single-model policy is forced onto a larger model while routing can
+still serve the easy stratum from a smaller one — a discontinuity
+imposed by the granularity of the available model sizes rather than by
+anything continuous in the workload.
+
+Two qualifications. The policy is selected on the same runs it is
+evaluated on and assumes difficulty is known before inference, so these
+figures bound the headroom available to difficulty-aware routing rather
+than describing a deployable saving; classifying difficulty at inference
+time would itself consume energy. And the 33.3% figure at a 0.70 floor
+rests on excluding qwen2.5:3b, whose hard-stratum accuracy is 0.675 with
+a Wilson interval of [0.520, 0.799] that contains 0.70 — the threshold
+crossing that produces the largest apparent saving is one this data
+cannot resolve. The 25.7% figure at a 0.80 floor does not depend on an
+unresolved comparison: the same interval's upper bound falls below 0.80.
+
 ## Limitations
 
 Batch size 1 on a consumer card is the far-right end of the
@@ -137,3 +168,4 @@ Model tags are floating; digests are recorded in `environment.txt`.
 `gemma4:12b` was excluded from the grid: at 8.9 GB it does not fit the
 8 GB card and Ollama splits it 31%/69% between CPU and GPU, putting part
 of the work outside the measurement boundary.
+
