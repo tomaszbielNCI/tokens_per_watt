@@ -102,15 +102,9 @@ parameter count rather than its total: it scores below the 1.5B dense
 model. This qualifies rather than confirms the claim that architecture
 substitutes for scale.
 
-## 6. Tokens per megawatt adds nothing to joules per token
+ 
 
-`tps_per_mw` as computed here equals 1e6 / `j_per_token` exactly —
-verified against the data (`j_per_token` 0.162 against `tps_per_mw`
-6 163 536). The vertical axis of the published throughput-versus-latency
-frontier restates energy per token with the sign reversed so that higher
-reads as better.
-
-## 7. Difficulty-conditioned routing: oracle headroom
+## 6. Difficulty-conditioned routing: oracle headroom
 
 Routing the query to the cheapest model that clears a given accuracy
 floor, against the cheapest single model that clears the same floor on
@@ -141,7 +135,7 @@ crossing that produces the largest apparent saving is one this data
 cannot resolve. The 25.7% figure at a 0.80 floor does not depend on an
 unresolved comparison: the same interval's upper bound falls below 0.80.
 
-## 8. The measurement boundary also moves the recommendation
+## 7. The measurement boundary also moves the recommendation
 
 The same routing policy, evaluated on the same runs, saves 25.7% on
 idle-subtracted energy and 21.7% on raw energy at a 0.80 accuracy floor.
